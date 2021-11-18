@@ -1,7 +1,6 @@
 require "curses"
 require 'require_all'
 require_rel "lib"
-require_rel "screens"
 
 include Curses
 
