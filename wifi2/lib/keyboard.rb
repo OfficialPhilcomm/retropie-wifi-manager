@@ -3,6 +3,8 @@ require "curses"
 class Keyboard
   include Curses
 
+  attr_reader :current_input
+
   KEYBOARD = [
     ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
     ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
@@ -67,6 +69,11 @@ class Keyboard
         @current_input += input
       end
     end
+  end
+
+  def get_current_key()
+    x, y = @selected_key
+    KEYBOARD[y][x]
   end
 
   def draw(window)
