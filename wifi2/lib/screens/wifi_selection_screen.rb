@@ -91,7 +91,14 @@ module Screens
 
     def resolve
       if @selected_ssid
-        return Screens::EnterWifiPasswordScreen.new(@selected_ssid)
+        network_exists = @config.cells.select do |cell|
+          cell.ssid == @selected_ssid
+        end.any?
+        if network_exists
+          return Screens::OverrideWarningScreen.new(@selected_ssid)
+        else
+          return Screens::EnterWifiPasswordScreen.new(@selected_ssid)
+        end
       end
     end
   end
