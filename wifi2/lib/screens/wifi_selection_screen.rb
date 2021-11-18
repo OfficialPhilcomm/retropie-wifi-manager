@@ -1,11 +1,7 @@
 module Screens
   class WifiSelectionScreen
     def initialize
-      network_regex = /(?<network>network\s*=\s*{(?:\s*[^}]*){2}})/x
-      file_output = `cat /etc/wpa_supplicant/wpa_supplicant.conf`
-      @cells = file_output.scan(network_regex).flatten.map do |network|
-        Cell.new(network)
-      end
+      @config = Config.new()
       
       ssid_regex = /\s*ESSID:"(?<ssid>[A-Za-z0-9-]+)"/
       @ssids = `iwlist wlan0 scan | grep ESSID`
@@ -58,10 +54,10 @@ module Screens
           window << "#{ssid}"
         end
 
-        saved = @cells.select do |cell|
+        saved = @config.cells.select do |cell|
           cell.ssid == ssid
         end.any?
-        window << " ✔" if saved
+        window << " ✔ (saved)" if saved
 
         clrtoeol
         window << "\n"
@@ -71,7 +67,6 @@ module Screens
       window.attron(color_pair(2)) {
         window << "████ Already connected"
       }
-      window << "\n #{@cells.map {|c| c.ssid}.join(" ")}"
 
       window.refresh
     end

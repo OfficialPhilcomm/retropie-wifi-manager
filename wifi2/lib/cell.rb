@@ -31,6 +31,18 @@ class Cell
     return ssid[1].gsub "\"", ""
   end
 
+  def set_priority(priority)
+    @arguments = @arguments.select do |argument|
+      argument[0] != "priority"
+    end
+    
+    arguments.append(["priority", 1]) if priority
+  end
+
+  def valid?
+    !ssid.nil?
+  end
+
   def to_s
     [
       "network={",
