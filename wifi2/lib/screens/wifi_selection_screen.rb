@@ -1,5 +1,7 @@
 module Screens
   class WifiSelectionScreen
+    OPTIONS = ["Connect", "Delete"]
+
     def initialize
       @config = Config.new()
       
@@ -28,6 +30,7 @@ module Screens
         end
       
       @wifi_index = 0
+      @option_index = 0
       
       @selected_ssid = nil
     end
@@ -63,6 +66,16 @@ module Screens
         window << "\n"
       end
 
+      OPTIONS.each_with_index do |option, i|
+        if @option_index == i
+          window.attron(color_pair(COLOR_RED)) {
+            window << "#{option} "
+          }
+        else
+          window << "#{option} "
+        end
+      end
+
       bottom_y = window.maxy() - 2
       window.setpos(bottom_y, 0)
       window.attron(color_pair(COLOR_GREEN)) {
@@ -83,6 +96,10 @@ module Screens
         @wifi_index -= 1
       when Key::DOWN
         @wifi_index += 1
+      when Key::LEFT
+        @option_index = 0
+      when Key::RIGHT
+        @option_index = 1
       when Key::ENTER
         @selected_ssid = @ssids[@wifi_index]
       when Key::BACK then exit 0
@@ -99,7 +116,11 @@ module Screens
           cell.ssid == @selected_ssid
         end.any?
         if network_exists
-          return Screens::OverrideWarningScreen.new(@selected_ssid)
+          if @option_index == 0
+            return Screens::OverrideWarningScreen.new(@selected_ssid)
+          else
+            return Screens::DeleteScreen.new(@selected_ssid)
+          end
         else
           return Screens::EnterWifiPasswordScreen.new(@selected_ssid)
         end
