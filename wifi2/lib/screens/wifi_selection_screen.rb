@@ -1,7 +1,5 @@
 module Screens
   class WifiSelectionScreen
-    OPTIONS = ["Connect", "Delete"]
-
     def initialize
       @config = Config.new()
       
@@ -66,13 +64,25 @@ module Screens
         window << "\n"
       end
 
-      OPTIONS.each_with_index do |option, i|
-        if @option_index == i
+      deletable = @config.cells.map {|c| c.ssid}.include?(@ssids[@wifi_index])
+
+      @option_index = 0 if @option_index == 1 && !deletable
+
+      if @option_index == 0
+        window.attron(color_pair(COLOR_RED)) {
+          window << "Connect"
+        }
+      else
+        window << "Connect"
+      end
+
+      if deletable
+        if @option_index == 1
           window.attron(color_pair(COLOR_RED)) {
-            window << "#{option} "
+            window << " Delete"
           }
         else
-          window << "#{option} "
+          window << " Delete"
         end
       end
 
