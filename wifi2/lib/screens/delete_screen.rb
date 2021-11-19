@@ -68,6 +68,8 @@ module Screens
         config.save!
         `wpa_cli -i wlan0 reconfigure`
 
+        sleep 10
+
         @finished = true
       end
     end
