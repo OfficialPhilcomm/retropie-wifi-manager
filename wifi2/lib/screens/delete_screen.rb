@@ -65,8 +65,6 @@ module Screens
         
         config.remove_cells cells_to_remove
         
-        config.cells.append(@cell)
-        
         config.save!
         `wpa_cli -i wlan0 reconfigure`
 
