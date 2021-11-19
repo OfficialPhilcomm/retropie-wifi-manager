@@ -46,7 +46,7 @@ module Screens
         `wpa_cli -i wlan0 reconfigure`
       end
       
-      sleep 3
+      sleep 10
       @finished = true
     end
 
