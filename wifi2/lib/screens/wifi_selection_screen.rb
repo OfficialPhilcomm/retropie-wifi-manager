@@ -47,25 +47,28 @@ module Screens
         end
         
         if @connected_ssids.include? ssid
-          window.attron(color_pair(2)) {
+          window.attron(color_pair(COLOR_GREEN)) {
+            window << "#{ssid}"
+          }
+        elsif @config.cells.map {|c| c.ssid}.include? ssid
+          window.attron(color_pair(COLOR_BLUE)) {
             window << "#{ssid}"
           }
         else
           window << "#{ssid}"
         end
 
-        saved = @config.cells.select do |cell|
-          cell.ssid == ssid
-        end.any?
-        window << " ✔ (saved)" if saved
-
         clrtoeol
         window << "\n"
       end
 
-      window << "\n"
-      window.attron(color_pair(2)) {
-        window << "████ Already connected"
+      bottom_y = window.maxy() - 2
+      window.setpos(bottom_y, 0)
+      window.attron(color_pair(COLOR_GREEN)) {
+        window << "████ Already connected\n"
+      }
+      window.attron(color_pair(COLOR_BLUE)) {
+        window << "████ Saved"
       }
 
       window.refresh
