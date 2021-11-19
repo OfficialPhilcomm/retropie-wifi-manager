@@ -88,7 +88,7 @@ class Keyboard
     KEYBOARD.each_with_index do |row, row_index|
       row.each_with_index do |key, key_index|
         if selected_y == row_index && selected_x == key_index
-          window.attron(color_pair(1)) {
+          window.attron(color_pair(COLOR_RED)) {
             if @shift
               window << key.capitalize
             else

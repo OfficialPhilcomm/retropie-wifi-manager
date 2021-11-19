@@ -39,7 +39,7 @@ module Screens
 
       @ssids.each_with_index do |ssid, i|
         if @index == i
-          window.attron(color_pair(1)) {
+          window.attron(color_pair(COLOR_RED)) {
             window << " »  "
           } if @index == i
         else

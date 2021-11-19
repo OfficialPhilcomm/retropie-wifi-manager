@@ -6,13 +6,18 @@ include Curses
 
 @screen = Screens::WifiSelectionScreen.new()
 
+COLOR_RED = 1
+COLOR_GREEN = 2
+COLOR_BLUE = 3
+
 begin
   init_screen
   start_color
   curs_set(0)
   noecho
-  init_pair(1, 1, 0)
-  init_pair(2, 2, 0)
+  init_pair(COLOR_RED, 1, 0)
+  init_pair(COLOR_GREEN, 2, 0)
+  init_pair(COLOR_BLUE, 6, 0)
 
   window = Curses::Window.new(0, 0, 1, 2)
   window.keypad true

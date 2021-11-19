@@ -14,7 +14,7 @@ module Screens
       window << "That network is already saved, it will be overwritten. Ya sure?\n\n"
 
       if @index == 0
-        window.attron(color_pair(1)) {
+        window.attron(color_pair(COLOR_RED)) {
           window << "Return"
         }
       else
@@ -24,7 +24,7 @@ module Screens
       window << "   "
 
       if @index == 1
-        window.attron(color_pair(1)) {
+        window.attron(color_pair(COLOR_RED)) {
           window << "Continue"
         }
       else
