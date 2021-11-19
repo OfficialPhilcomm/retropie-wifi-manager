@@ -45,7 +45,7 @@ module Screens
 
     def resolve
       if @connect
-        return Screens::TestResolveScreen.new(@wifi, @keyboard.current_input)
+        return Screens::ConnectingScreen.new(@wifi, @keyboard.current_input)
       end
     end
   end
