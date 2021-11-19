@@ -12,7 +12,7 @@ class Keyboard
     ["z", "x", "c", "v", "b", "n", "m"],
     ["!", '"', "§", "$", "%", "&", "/", "(", ")", "="],
     ["?", "+", "*", "#", "'", ".", ":", ",", ";", "-"],
-    ["Shift", "←", "Connect"]
+    ["Shift", "←", "Connect", "Exit"]
   ]
 
   def initialize
@@ -53,15 +53,21 @@ class Keyboard
     @selected_key[0] = [@selected_key[0] + 1, 0, limit_x].sort[1]
   end
 
+  def backspace
+    @current_input = @current_input[0...-1]
+  end
+
   def press
     x, y = @selected_key
     input = KEYBOARD[y][x]
     if input == "Shift"
       @shift = !@shift
     elsif input == "←"
-      @current_input = @current_input[0...-1]
+      backspace
     elsif input == "Connect"
       # do nothing for now
+    elsif input == "Exit"
+      exit 0
     else
       if @shift
         @current_input += input.capitalize

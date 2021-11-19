@@ -36,7 +36,8 @@ module Screens
         else
           @keyboard.press
         end
-      when Key::BACK then exit 0
+      when Key::BACK
+        @keyboard.backspace
       end
     end
 
