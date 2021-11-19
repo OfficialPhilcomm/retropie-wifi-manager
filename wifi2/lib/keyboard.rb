@@ -64,8 +64,6 @@ class Keyboard
       @shift = !@shift
     elsif input == "←"
       backspace
-    elsif input == "Connect"
-      # do nothing for now
     elsif input == "Exit"
       exit 0
     else
