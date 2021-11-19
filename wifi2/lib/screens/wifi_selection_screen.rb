@@ -64,9 +64,9 @@ module Screens
         window << "\n"
       end
 
-      deletable = @config.cells.map {|c| c.ssid}.include?(@ssids[@wifi_index])
+      selected_is_saved = @config.cells.map {|c| c.ssid}.include?(@ssids[@wifi_index])
 
-      @option_index = 0 if @option_index == 1 && !deletable
+      @option_index = 0 if @option_index > 0 && !selected_is_saved
 
       if @option_index == 0
         window.attron(color_pair(COLOR_RED)) {
@@ -76,13 +76,21 @@ module Screens
         window << "Connect"
       end
 
-      if deletable
+      if selected_is_saved
         if @option_index == 1
           window.attron(color_pair(COLOR_RED)) {
             window << " Delete"
           }
         else
           window << " Delete"
+        end
+
+        if @option_index == 2
+          window.attron(color_pair(COLOR_RED)) {
+            window << " Prioritize"
+          }
+        else
+          window << " Prioritize"
         end
       end
 
@@ -107,14 +115,15 @@ module Screens
       when Key::DOWN
         @wifi_index += 1
       when Key::LEFT
-        @option_index = 0
+        @option_index -= 1
       when Key::RIGHT
-        @option_index = 1
+        @option_index += 1
       when Key::ENTER
         @selected_ssid = @ssids[@wifi_index]
       when Key::BACK then exit 0
       end
       @wifi_index = [@wifi_index, 0, @ssids.size - 1].sort[1]
+      @option_index = [@option_index, 0, 2].sort[1]
     end
 
     def compute
@@ -126,10 +135,13 @@ module Screens
           cell.ssid == @selected_ssid
         end.any?
         if network_exists
-          if @option_index == 0
+          case @option_index
+          when 0
             return Screens::OverrideWarningScreen.new(@selected_ssid)
-          else
+          when 1
             return Screens::DeleteScreen.new(@selected_ssid)
+          when 2
+            return Screens::PrioritizeScreen.new(@selected_ssid)
           end
         else
           return Screens::EnterWifiPasswordScreen.new(@selected_ssid)
