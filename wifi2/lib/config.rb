@@ -19,6 +19,13 @@ class Config
     end
   end
 
+  def set_priority(cell)
+    @cells.each do |c|
+      c.set_priority false
+    end
+    cell.set_priority true
+  end
+
   def remove_cells(cells)
     @cells = @cells.select do |cell|
       !cells.include? cell

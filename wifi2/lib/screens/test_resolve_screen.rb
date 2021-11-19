@@ -10,10 +10,7 @@ module Screens
       if @cell.valid?
         config = Config.new()
         
-        config.cells.each do |cell|
-          cell.set_priority false
-        end
-        @cell.set_priority true
+        config.set_priority @cell
 
         cells_to_remove = config.cells.select do |cell|
           cell.ssid == @cell.ssid
