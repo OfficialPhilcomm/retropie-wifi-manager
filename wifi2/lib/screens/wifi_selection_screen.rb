@@ -27,7 +27,8 @@ module Screens
           ssid
         end
       
-      @index = 0
+      @wifi_index = 0
+      
       @selected_ssid = nil
     end
 
@@ -38,10 +39,10 @@ module Screens
       window << "Found #{@ssids.size} access points:\n"
 
       @ssids.each_with_index do |ssid, i|
-        if @index == i
+        if @wifi_index == i
           window.attron(color_pair(COLOR_RED)) {
             window << " »  "
-          } if @index == i
+          } if @wifi_index == i
         else
           window << "   "
         end
@@ -79,14 +80,14 @@ module Screens
 
       case key
       when Key::UP
-        @index -= 1
+        @wifi_index -= 1
       when Key::DOWN
-        @index += 1
+        @wifi_index += 1
       when Key::ENTER
-        @selected_ssid = @ssids[@index]
+        @selected_ssid = @ssids[@wifi_index]
       when Key::BACK then exit 0
       end
-      @index = [@index, 0, @ssids.size - 1].sort[1]
+      @wifi_index = [@wifi_index, 0, @ssids.size - 1].sort[1]
     end
 
     def compute
