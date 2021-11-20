@@ -81,7 +81,7 @@ class Keyboard
   end
 
   def draw(window)
-    window << "Passowrd: #{@current_input}\n\n"
+    window << "Password: #{@current_input}\n\n"
 
     selected_x, selected_y = @selected_key
 
