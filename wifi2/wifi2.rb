@@ -21,23 +21,27 @@ begin
   init_pair(COLOR_RED, 1, 7)
   init_pair(COLOR_GREEN, 2, 7)
   init_pair(COLOR_BLUE, 6, 7)
-  init_pair(5, 7, 4)
 
   max_x = Curses.cols
   max_y = Curses.lines
   padding_x = [0, max_x, max_x - 50].sort[1]
   padding_y = [0, max_y, max_y - 20].sort[1]
 
-  background_window = Curses::Window.new(0, 0, 0, 0)
-  background_window.bkgdset(color_pair(5))
-  background_window.clear
-  background_window.refresh
-
-  window = Curses::Window.new(
+  background_window = Curses::Window.new(
     max_y - padding_y,
     max_x - padding_x,
     padding_y / 2,
     padding_x / 2
+  )
+  background_window.bkgdset(color_pair(DEFAULT_COLOR))
+  background_window.clear
+  background_window.refresh
+
+  window = Curses::Window.new(
+    (max_y - padding_y) - 2,
+    (max_x - padding_x) - 2,
+    (padding_y / 2) + 1,
+    (padding_x / 2) + 1
   )
   window.bkgdset(color_pair(DEFAULT_COLOR))
   window.keypad true
