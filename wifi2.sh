@@ -1,1 +1,1 @@
-sudo ruby /opt/dev_philcomm/wifi2/wifi2.rb
+ruby /opt/retropie/supplementary/advanced-wifi/wifi2/wifi2.rb
