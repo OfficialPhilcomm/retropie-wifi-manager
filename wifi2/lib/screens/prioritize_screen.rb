@@ -76,7 +76,7 @@ module Screens
 
     def resolve
       if @finished
-        return Screens::WifiSelectionScreen.new()
+        return Screens::ScanForSSIDsScreen.new()
       end
     end
   end

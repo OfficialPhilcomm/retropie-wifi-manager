@@ -4,7 +4,7 @@ require_rel "lib"
 
 include Curses
 
-@screen = Screens::WifiSelectionScreen.new()
+@screen = Screens::ScanForSSIDsScreen.new()
 
 COLOR_RED = 1
 COLOR_GREEN = 2

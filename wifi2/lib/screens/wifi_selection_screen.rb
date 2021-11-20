@@ -1,19 +1,9 @@
 module Screens
   class WifiSelectionScreen
-    def initialize
+    def initialize(ssids)
       @config = Config.new()
-      
-      ssid_regex = /\s*ESSID:"(?<ssid>[A-Za-z0-9-]+)"/
-      @ssids = `iwlist wlan0 scan | grep ESSID`
-        .split("\n")
-        .map do |line|
-          match = ssid_regex.match(line)
-          next unless match
-          match[:ssid]
-        end
-        .select do |ssid|
-          ssid
-        end
+
+      @ssids = ssids
       
       connected_ssid_regex = /[A-Za-z0-9]+\s+ESSID:"(?<ssid>[A-Za-z0-9-]+)"/
       @connected_ssids = `iwgetid`

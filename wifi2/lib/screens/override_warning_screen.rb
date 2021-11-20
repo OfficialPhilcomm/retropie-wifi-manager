@@ -54,7 +54,7 @@ module Screens
         if @index == 1
           return Screens::EnterWifiPasswordScreen.new(@selected_ssid)
         else
-          return Screens::WifiSelectionScreen.new()
+          return Screens::ScanForSSIDsScreen.new()
         end
       end
     end
