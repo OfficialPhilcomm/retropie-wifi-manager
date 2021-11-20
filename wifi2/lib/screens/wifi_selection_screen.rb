@@ -21,6 +21,7 @@ module Screens
       @option_index = 0
       
       @selected_ssid = nil
+      @finished = false
     end
 
     def draw(window)
@@ -30,10 +31,10 @@ module Screens
       window << "Found #{@ssids.size} access points:\n"
 
       @ssids.each_with_index do |ssid, i|
-        if @wifi_index == i
+        if @wifi_index == i && !@selected_ssid
           window.attron(color_pair(COLOR_RED)) {
             window << " »  "
-          } if @wifi_index == i
+          }
         else
           window << "   "
         end
@@ -50,38 +51,40 @@ module Screens
           window << "#{ssid}"
         end
 
+        if @selected_ssid && @wifi_index == i
+          if @option_index == 0
+            window.attron(color_pair(COLOR_RED)) {
+              window << "\n    »  Connect"
+            }
+          else
+            window << "\n      Connect"
+          end
+
+          selected_is_saved = @config.cells.map {|c| c.ssid}.include?(@ssids[@wifi_index])
+
+          if selected_is_saved
+            if @option_index == 1
+              window.attron(color_pair(COLOR_RED)) {
+                window << "\n    »  Delete"
+              }
+            else
+              window << "\n      Delete"
+            end
+
+            if @option_index == 2
+              window.attron(color_pair(COLOR_RED)) {
+                window << "\n    »  Prioritize"
+              }
+            else
+              window << "\n      Prioritize"
+            end
+          end
+
+          window << "\n"
+        end
+
         clrtoeol
         window << "\n"
-      end
-
-      selected_is_saved = @config.cells.map {|c| c.ssid}.include?(@ssids[@wifi_index])
-
-      @option_index = 0 if @option_index > 0 && !selected_is_saved
-
-      if @option_index == 0
-        window.attron(color_pair(COLOR_RED)) {
-          window << "Connect"
-        }
-      else
-        window << "Connect"
-      end
-
-      if selected_is_saved
-        if @option_index == 1
-          window.attron(color_pair(COLOR_RED)) {
-            window << " Delete"
-          }
-        else
-          window << " Delete"
-        end
-
-        if @option_index == 2
-          window.attron(color_pair(COLOR_RED)) {
-            window << " Prioritize"
-          }
-        else
-          window << " Prioritize"
-        end
       end
 
       bottom_y = window.maxy() - 2
@@ -101,26 +104,42 @@ module Screens
 
       case key
       when Key::UP
-        @wifi_index -= 1
+        if @selected_ssid
+          @option_index -= 1
+        else
+          @wifi_index -= 1
+        end
       when Key::DOWN
-        @wifi_index += 1
-      when Key::LEFT
-        @option_index -= 1
-      when Key::RIGHT
-        @option_index += 1
+        if @selected_ssid
+          @option_index += 1
+        else
+          @wifi_index += 1
+        end
       when Key::ENTER
-        @selected_ssid = @ssids[@wifi_index]
-      when Key::BACK then exit 0
+        if @selected_ssid
+          @finished = true
+        else
+          @selected_ssid = @ssids[@wifi_index]
+        end
+      when Key::BACK
+        if @selected_ssid
+          @selected_ssid = nil
+        else
+          exit 0
+        end
       end
     end
 
     def compute
       @wifi_index = [@wifi_index, 0, @ssids.size - 1].sort[1]
       @option_index = [@option_index, 0, 2].sort[1]
+
+      selected_is_saved = @config.cells.map {|c| c.ssid}.include?(@ssids[@wifi_index])
+      @option_index = 0 if @option_index > 0 && !selected_is_saved
     end
 
     def resolve
-      if @selected_ssid
+      if @finished
         network_exists = @config.cells.select do |cell|
           cell.ssid == @selected_ssid
         end.any?
