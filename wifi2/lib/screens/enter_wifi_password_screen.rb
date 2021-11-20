@@ -3,7 +3,7 @@ module Screens
 
     def initialize(wifi, password=nil)
       @wifi = wifi
-      @keyboard = Keyboard.new()
+      @keyboard = Keyboard.new("Password")
       @keyboard.current_input = password if password
       @connect = false
     end

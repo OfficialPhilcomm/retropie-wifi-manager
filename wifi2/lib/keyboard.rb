@@ -16,7 +16,8 @@ class Keyboard
     ["Shift", "←", "Connect", "Exit"]
   ]
 
-  def initialize
+  def initialize(prefix)
+    @prefix = prefix
     @shift = false
     @selected_key = [0, 0]
     @current_input = ""
@@ -82,7 +83,7 @@ class Keyboard
   end
 
   def draw(window)
-    window << "Password: #{@current_input}\n\n"
+    window << "#{@prefix}: #{@current_input}\n\n"
 
     selected_x, selected_y = @selected_key
 
