@@ -213,6 +213,7 @@ module Screens
             return Screens::EnterWifiPasswordScreen.new(@selected_ssid)
           end
         else
+          return Screens::ManualSSIDScreen.new() if @menu_index == 0
           exit 0 if @menu_index == 1
         end
       end
