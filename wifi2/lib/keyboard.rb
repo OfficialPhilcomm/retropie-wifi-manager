@@ -1,8 +1,4 @@
-require "curses"
-
 class Keyboard
-  include Curses
-
   attr_accessor :current_input
 
   KEYBOARD = [
