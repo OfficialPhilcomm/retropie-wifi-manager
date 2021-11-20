@@ -21,7 +21,7 @@ function depends_advanced-wifi() {
 }
 
 function sources_advanced-wifi() {
-  gitPullOrClone
+  gitPullOrClone "$md_inst"
 }
 
 function install_advanced-wifi() {
@@ -29,18 +29,5 @@ function install_advanced-wifi() {
   chown -R $user:$user "$md_inst"
   chmod -R 755 "$md_inst"
 
-  mv wifi2.sh /home/pi/RetroPie/retropiemenu/
-  mkdir /opt/dev_philcomm
-  mv wifi2/ /opt/dev_philcomm/
   sudo gem install curses require_all
-}
-
-function remove_advanced-wifi() {
-  cd "$md_inst"
-  
-  rm /home/pi/RetroPie/retropiemenu/wifi2.sh
-  printMsgs "dialog" "Successfully uninstalled"
-
-  cd ..
-  rm -R "$md_inst"
 }
