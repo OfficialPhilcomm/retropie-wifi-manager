@@ -79,11 +79,21 @@ class Keyboard
   end
 
   def draw(window)
+    @padding = window.maxx - KEYBOARD.map do |row|
+      row.join(" ").length
+    end.max
+    @padding /= 2
+
     window << "#{@prefix}: #{@current_input}\n\n"
+
+    bottom_y = window.maxy() - KEYBOARD.size
+    window.setpos(bottom_y, 0)
 
     selected_x, selected_y = @selected_key
 
     KEYBOARD.each_with_index do |row, row_index|
+      window << "".ljust(@padding)
+
       row.each_with_index do |key, key_index|
         if selected_y == row_index && selected_x == key_index
           window.attron(color_pair(COLOR_RED)) {
