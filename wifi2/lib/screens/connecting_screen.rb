@@ -11,11 +11,25 @@ module Screens
       window.clear
       window.setpos(0,0)
 
-      wpa_passphrase_output = `wpa_passphrase "#{@ssid}" "#{@password}"`
-      @cell = Cell.new(wpa_passphrase_output)
+      network_string = if @password == ""
+        [
+          "network={",
+          "\tssid=\"#{@ssid}\"",
+          "\tkey_mgmt=NONE",
+          "}\n"
+        ].join("\n")
+      else
+        `wpa_passphrase "#{@ssid}" "#{@password}"`
+      end
+
+      @cell = Cell.new(network_string)
 
       window << "Wifi: #{@ssid}\n"
-      window << "Entered password: #{@password}"
+      if @password == ""
+        window << "No password entered"
+      else
+        window << "Entered password: #{@password}"
+      end
       
       window << "\n\nNetwork invalid (password needs to be at least 8 characters)" unless @cell.valid?
 

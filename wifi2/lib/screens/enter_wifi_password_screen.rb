@@ -47,7 +47,7 @@ module Screens
 
     def resolve
       if @connect
-        if @keyboard.current_input.length >= 8
+        if @keyboard.current_input.length == 0 || @keyboard.current_input.length >= 8
           return Screens::ConnectingScreen.new(@wifi, @keyboard.current_input)
         else
           return Screens::PasswordErrorScreen.new(@ssid, @keyboard.current_input)
