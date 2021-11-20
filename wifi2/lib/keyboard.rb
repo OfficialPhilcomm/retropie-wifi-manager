@@ -3,7 +3,7 @@ require "curses"
 class Keyboard
   include Curses
 
-  attr_reader :current_input
+  attr_accessor :current_input
 
   KEYBOARD = [
     ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],

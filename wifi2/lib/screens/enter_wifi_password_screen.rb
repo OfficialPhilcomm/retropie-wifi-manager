@@ -1,9 +1,10 @@
 module Screens
   class EnterWifiPasswordScreen
 
-    def initialize(wifi)
+    def initialize(wifi, password=nil)
       @wifi = wifi
       @keyboard = Keyboard.new()
+      @keyboard.current_input = password if password
       @connect = false
     end
 
@@ -46,7 +47,11 @@ module Screens
 
     def resolve
       if @connect
-        return Screens::ConnectingScreen.new(@wifi, @keyboard.current_input)
+        if @keyboard.current_input.length >= 8
+          return Screens::ConnectingScreen.new(@wifi, @keyboard.current_input)
+        else
+          return Screens::PasswordErrorScreen.new(@ssid, @keyboard.current_input)
+        end
       end
     end
   end
