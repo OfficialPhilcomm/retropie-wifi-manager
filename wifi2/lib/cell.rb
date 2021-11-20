@@ -1,5 +1,5 @@
 class Cell
-  ARGUMENT_REGEX = /\s*(?<parameter>[A-Za-z#]+)=(?<value>.*)/
+  ARGUMENT_REGEX = /\s*(?<parameter>[A-Za-z#_]+)=(?<value>.*)/
 
   attr_reader :arguments
 
