@@ -18,7 +18,11 @@ module Screens
         end
       
       @wifi_index = 0
-      @option_index = 0
+      @wifi_option_index = 0
+
+      @menu_index = 0
+      
+      @focus = 0
       
       @selected_ssid = nil
       @finished = false
@@ -31,7 +35,7 @@ module Screens
       window << "Found #{@ssids.size} access points:\n"
 
       @ssids.each_with_index do |ssid, i|
-        if @wifi_index == i && !@selected_ssid
+        if @wifi_index == i && @focus == 0 && !@selected_ssid
           window.attron(color_pair(COLOR_RED)) {
             window << " »  "
           }
@@ -52,7 +56,7 @@ module Screens
         end
 
         if @selected_ssid && @wifi_index == i
-          if @option_index == 0
+          if @wifi_option_index == 0
             window.attron(color_pair(COLOR_RED)) {
               window << "\n    »  Connect"
             }
@@ -63,7 +67,7 @@ module Screens
           selected_is_saved = @config.cells.map {|c| c.ssid}.include?(@ssids[@wifi_index])
 
           if selected_is_saved
-            if @option_index == 1
+            if @wifi_option_index == 1
               window.attron(color_pair(COLOR_RED)) {
                 window << "\n    »  Delete"
               }
@@ -71,7 +75,7 @@ module Screens
               window << "\n      Delete"
             end
 
-            if @option_index == 2
+            if @wifi_option_index == 2
               window.attron(color_pair(COLOR_RED)) {
                 window << "\n    »  Prioritize"
               }
@@ -87,31 +91,62 @@ module Screens
         window << "\n"
       end
 
-      bottom_y = window.maxy() - 2
+      draw_bottom(window)
+
+      window.refresh
+    end
+
+    def draw_bottom(window)
+      bottom_y = window.maxy() - 5
       window.setpos(bottom_y, 0)
+
+      if @focus == 1 && @menu_index == 0
+        window.attron(color_pair(1)) {
+          window << "Enter SSID manually\n"
+        }
+      else
+        window << "Enter SSID manually\n"
+      end
+
+      if @focus == 1 && @menu_index == 1
+        window.attron(color_pair(1)) {
+          window << "Exit\n"
+        }
+      else
+        window << "Exit\n"
+      end
+
+      window << "\n"
+
       window.attron(color_pair(COLOR_GREEN)) {
         window << "████ Already connected\n"
       }
       window.attron(color_pair(COLOR_BLUE)) {
         window << "████ Saved"
       }
-
-      window.refresh
     end
 
     def input(window)
       key = Key.get(window.getch)
 
+      if @focus == 0
+        input_wifi(key)
+      else
+        input_menu(key)
+      end
+    end
+
+    def input_wifi(key)
       case key
       when Key::UP
         if @selected_ssid
-          @option_index -= 1
+          @wifi_option_index -= 1
         else
           @wifi_index -= 1
         end
       when Key::DOWN
         if @selected_ssid
-          @option_index += 1
+          @wifi_option_index += 1
         else
           @wifi_index += 1
         end
@@ -130,30 +165,55 @@ module Screens
       end
     end
 
+    def input_menu(key)
+      case key
+      when Key::UP
+        @menu_index -= 1
+      when Key::DOWN
+        @menu_index += 1
+      when Key::ENTER
+        @finished = true
+      when Key::BACK
+        exit 0
+      end
+    end
+
     def compute
+      if @wifi_index >= @ssids.size
+        @focus = 1
+      elsif @menu_index < 0
+        @focus = 0
+      end
+
       @wifi_index = [@wifi_index, 0, @ssids.size - 1].sort[1]
-      @option_index = [@option_index, 0, 2].sort[1]
+      @wifi_option_index = [@wifi_option_index, 0, 2].sort[1]
+
+      @menu_index = [@menu_index, 0, 1].sort[1]
 
       selected_is_saved = @config.cells.map {|c| c.ssid}.include?(@ssids[@wifi_index])
-      @option_index = 0 if @option_index > 0 && !selected_is_saved
+      @wifi_option_index = 0 if @wifi_option_index > 0 && !selected_is_saved
     end
 
     def resolve
       if @finished
-        network_exists = @config.cells.select do |cell|
-          cell.ssid == @selected_ssid
-        end.any?
-        if network_exists
-          case @option_index
-          when 0
-            return Screens::OverrideWarningScreen.new(@selected_ssid)
-          when 1
-            return Screens::DeleteScreen.new(@selected_ssid)
-          when 2
-            return Screens::PrioritizeScreen.new(@selected_ssid)
+        if @focus == 0
+          network_exists = @config.cells.select do |cell|
+            cell.ssid == @selected_ssid
+          end.any?
+          if network_exists
+            case @wifi_option_index
+            when 0
+              return Screens::OverrideWarningScreen.new(@selected_ssid)
+            when 1
+              return Screens::DeleteScreen.new(@selected_ssid)
+            when 2
+              return Screens::PrioritizeScreen.new(@selected_ssid)
+            end
+          else
+            return Screens::EnterWifiPasswordScreen.new(@selected_ssid)
           end
         else
-          return Screens::EnterWifiPasswordScreen.new(@selected_ssid)
+          exit 0 if @menu_index == 1
         end
       end
     end
