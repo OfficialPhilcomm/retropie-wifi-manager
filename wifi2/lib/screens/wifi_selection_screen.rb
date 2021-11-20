@@ -112,11 +112,11 @@ module Screens
         @selected_ssid = @ssids[@wifi_index]
       when Key::BACK then exit 0
       end
-      @wifi_index = [@wifi_index, 0, @ssids.size - 1].sort[1]
-      @option_index = [@option_index, 0, 2].sort[1]
     end
 
     def compute
+      @wifi_index = [@wifi_index, 0, @ssids.size - 1].sort[1]
+      @option_index = [@option_index, 0, 2].sort[1]
     end
 
     def resolve
