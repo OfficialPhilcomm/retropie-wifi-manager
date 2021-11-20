@@ -30,6 +30,8 @@ function install_advanced-wifi() {
   chmod -R 755 "$md_inst"
 
   mv wifi2.sh /home/pi/RetroPie/retropiemenu/
+  mkdir /opt/dev_philcomm
+  mv wifi2/ /opt/dev_philcomm/
   sudo gem install curses require_all
 }
 
