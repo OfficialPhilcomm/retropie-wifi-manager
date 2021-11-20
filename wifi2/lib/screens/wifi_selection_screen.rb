@@ -101,7 +101,7 @@ module Screens
       window.setpos(bottom_y, 0)
 
       if @focus == 1 && @menu_index == 0
-        window.attron(color_pair(1)) {
+        window.attron(color_pair(COLOR_RED)) {
           window << "Enter SSID manually\n"
         }
       else
@@ -109,7 +109,7 @@ module Screens
       end
 
       if @focus == 1 && @menu_index == 1
-        window.attron(color_pair(1)) {
+        window.attron(color_pair(COLOR_RED)) {
           window << "Exit\n"
         }
       else
