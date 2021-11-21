@@ -12,6 +12,10 @@ module Screens
 
       window << "Prioritize #{@selected_ssid}?\n\n"
 
+      @padding = (window.maxx - 8) / 2
+
+      window << "".ljust(@padding)
+
       if @index == 0
         window.attron(color_pair(COLOR_RED)) {
           window << "Yes"

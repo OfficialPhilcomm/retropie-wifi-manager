@@ -13,6 +13,10 @@ module Screens
 
       window << "That network is already saved, it will be overwritten. Ya sure?\n\n"
 
+      @padding = (window.maxx - 17) / 2
+
+      window << "".ljust(@padding)
+
       if @index == 0
         window.attron(color_pair(COLOR_RED)) {
           window << "Return"

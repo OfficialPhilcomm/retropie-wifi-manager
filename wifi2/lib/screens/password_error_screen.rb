@@ -14,6 +14,10 @@ module Screens
 
       window << "Password is too short. Wanna re-enter or go back to menu?\n\n"
 
+      @padding = (window.maxx - 11) / 2
+
+      window << "".ljust(@padding)
+
       if @index == 0
         window.attron(color_pair(COLOR_RED)) {
           window << "Back"

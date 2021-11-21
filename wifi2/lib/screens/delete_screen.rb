@@ -15,6 +15,10 @@ module Screens
 
       window << "Sure you wanna delete this network? You will have to reenter the password\n\n"
 
+      @padding = (window.maxx - 8) / 2
+
+      window << "".ljust(@padding)
+
       if @index == 0
         window.attron(color_pair(COLOR_RED)) {
           window << "No"
