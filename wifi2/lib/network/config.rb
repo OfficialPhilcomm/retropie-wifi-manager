@@ -16,7 +16,7 @@ module Network
       @update_config = update_config_match[:update_config] if country_match
 
       @cells = file_output.scan(NETWORK_REGEX).flatten.map do |network|
-        Cell.new(network)
+        Network::Cell.new(network)
       end
     end
 

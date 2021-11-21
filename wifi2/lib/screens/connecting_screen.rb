@@ -22,7 +22,7 @@ module Screens
         `wpa_passphrase "#{@ssid}" "#{@password}"`
       end
 
-      @cell = Cell.new(network_string)
+      @cell = Network::Cell.new(network_string)
 
       window << "Wifi: #{@ssid}\n"
       if @password == ""
