@@ -1,10 +1,18 @@
+require "singleton"
+
 module Network
   class Wifi
+    include Singleton
+
     ACCESS_POINT_REGEX = /(?<network>Address:\s*(.+)\sFrequency:\s*(.+)\sQuality=\s*(.+)\sEncryption\s*(.+)\sESSID:\s*"(.+)"\s)/
     NETWORK_REGEX = /Address:\s*(?<mac>([0-9A-F]{2}[:]){5}([0-9A-F]{2}))\sFrequency:(?<frequency>.*)\sQuality=(?<quality>.*)\sEncryption\s(?<encryption>.*)\sESSID:"(?<ssid>.*)"/
     FREQUENCY_REGEX = /(?<frequency>\d[.]\d+)/
     
-    def self.access_points
+    def access_points
+      @access_points ||= parse_access_points
+    end
+
+    def parse_access_points
       scan_output = `iwlist wlan0 scan | grep -o '\\(ESSID:\\|Address:\\|Frequency:\\|Quality=\\|Encryption key:\\).*'`
 
       scan_output.scan(ACCESS_POINT_REGEX).flatten.map do |access_point|
