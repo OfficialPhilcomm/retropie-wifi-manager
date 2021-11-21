@@ -6,16 +6,25 @@ module Screens
       @access_points = access_points
       
       connected_ssid_regex = /[A-Za-z0-9]+\s+ESSID:"(?<ssid>[A-Za-z0-9-]+)"/
-      @connected_ssids = `iwgetid`
-        .split("\n")
-        .map do |line|
-          match = connected_ssid_regex.match(line)
-          next unless match
-          match[:ssid]
+      connected_freq_regex = /(?<frequency>\d[.]\d+)/
+
+      iwgetid_ssid_match = connected_ssid_regex.match(`iwgetid`)
+      iwgetid_freq_match = connected_freq_regex.match(`iwgetid --freq`)
+
+      @connected_ssid = iwgetid_ssid_match ? iwgetid_ssid_match[:ssid] : nil
+      @connected_frequency = if iwgetid_freq_match
+        frequency = iwgetid_freq_match[:frequency].to_f
+        diff_to_2_4 = (frequency - 2.4).abs
+        diff_to_5 = (frequency - 5).abs
+
+        frequency = if diff_to_2_4 < diff_to_5
+          2.4
+        else
+          5
         end
-        .select do |ssid|
-          ssid
-        end
+      else
+        nil
+      end
       
       @wifi_index = 0
       @wifi_option_index = 0
@@ -43,7 +52,7 @@ module Screens
           window << "   "
         end
         
-        if @connected_ssids.include? access_point.ssid
+        if @connected_ssid == access_point.ssid && @connected_frequency == access_point.frequency
           window.attron(color_pair(COLOR_GREEN)) {
             window << "#{access_point.ssid}"
             window << " (5GHz)" if access_point.five_ghz?
