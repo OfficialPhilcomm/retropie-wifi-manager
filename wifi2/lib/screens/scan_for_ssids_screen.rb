@@ -1,6 +1,6 @@
 module Screens
   class ScanForSSIDsScreen
-    SSID_REGEX = /\s*ESSID:"(?<ssid>[A-Za-z0-9-]+)"/
+    SSID_REGEX = /\s*ESSID:"(?<ssid>.+)"/
     
     def initialize
       @ssids = nil
