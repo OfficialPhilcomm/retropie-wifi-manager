@@ -6,4 +6,5 @@ module Network
       @ssid = ssid
       @frequency = frequency
     end
+  end
 end
