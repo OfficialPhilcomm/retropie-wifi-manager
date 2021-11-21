@@ -25,9 +25,7 @@ module Screens
     def resolve
       if @access_points
         return WifiSelectionScreen.new(
-          @access_points.map do |access_point|
-            access_point.ssid
-          end
+          @access_points
         )
       end
     end

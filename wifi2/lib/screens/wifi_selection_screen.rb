@@ -1,9 +1,9 @@
 module Screens
   class WifiSelectionScreen
-    def initialize(ssids)
+    def initialize(access_points)
       @config = Config.new()
 
-      @ssids = ssids
+      @access_points = access_points
       
       connected_ssid_regex = /[A-Za-z0-9]+\s+ESSID:"(?<ssid>[A-Za-z0-9-]+)"/
       @connected_ssids = `iwgetid`
@@ -24,7 +24,7 @@ module Screens
       
       @focus = 0
       
-      @selected_ssid = nil
+      @selected_access_point = nil
       @finished = false
     end
 
@@ -32,10 +32,10 @@ module Screens
       window.clear
       window.setpos(0,0)
 
-      window << "Found #{@ssids.size} access points:\n"
+      window << "Found #{@access_points.size} access points:\n"
 
-      @ssids.each_with_index do |ssid, i|
-        if @wifi_index == i && @focus == 0 && !@selected_ssid
+      @access_points.each_with_index do |access_point, i|
+        if @wifi_index == i && @focus == 0 && !@selected_access_point
           window.attron(color_pair(COLOR_RED)) {
             window << " »  "
           }
@@ -43,19 +43,19 @@ module Screens
           window << "   "
         end
         
-        if @connected_ssids.include? ssid
+        if @connected_ssids.include? access_point.ssid
           window.attron(color_pair(COLOR_GREEN)) {
-            window << "#{ssid}"
+            window << "#{access_point.ssid}"
           }
-        elsif @config.cells.map {|c| c.ssid}.include? ssid
+        elsif @config.cells.map {|c| c.ssid}.include? access_point.ssid
           window.attron(color_pair(COLOR_BLUE)) {
-            window << "#{ssid}"
+            window << "#{access_point.ssid}"
           }
         else
-          window << "#{ssid}"
+          window << "#{access_point.ssid}"
         end
 
-        if @selected_ssid && @wifi_index == i
+        if @selected_access_point && @wifi_index == i
           if @wifi_option_index == 0
             window.attron(color_pair(COLOR_RED)) {
               window << "\n    »  Connect"
@@ -64,7 +64,7 @@ module Screens
             window << "\n      Connect"
           end
 
-          selected_is_saved = @config.cells.map {|c| c.ssid}.include?(@ssids[@wifi_index])
+          selected_is_saved = @config.cells.map {|c| c.ssid}.include?(@access_points[@wifi_index].ssid)
 
           if selected_is_saved
             if @wifi_option_index == 1
@@ -139,26 +139,26 @@ module Screens
     def input_wifi(key)
       case key
       when Key::UP
-        if @selected_ssid
+        if @selected_access_point
           @wifi_option_index -= 1
         else
           @wifi_index -= 1
         end
       when Key::DOWN
-        if @selected_ssid
+        if @selected_access_point
           @wifi_option_index += 1
         else
           @wifi_index += 1
         end
       when Key::ENTER
-        if @selected_ssid
+        if @selected_access_point
           @finished = true
         else
-          @selected_ssid = @ssids[@wifi_index]
+          @selected_access_point = @access_points[@wifi_index]
         end
       when Key::BACK
-        if @selected_ssid
-          @selected_ssid = nil
+        if @selected_access_point
+          @selected_access_point = nil
         else
           exit 0
         end
@@ -179,18 +179,18 @@ module Screens
     end
 
     def compute
-      if @wifi_index >= @ssids.size
+      if @wifi_index >= @access_points.size
         @focus = 1
       elsif @menu_index < 0
         @focus = 0
       end
 
-      @wifi_index = [@wifi_index, 0, @ssids.size - 1].sort[1]
+      @wifi_index = [@wifi_index, 0, @access_points.size - 1].sort[1]
       @wifi_option_index = [@wifi_option_index, 0, 2].sort[1]
 
       @menu_index = [@menu_index, 0, 1].sort[1]
 
-      selected_is_saved = @config.cells.map {|c| c.ssid}.include?(@ssids[@wifi_index])
+      selected_is_saved = @config.cells.map {|c| c.ssid}.include?(@access_points[@wifi_index].ssid)
       @wifi_option_index = 0 if @wifi_option_index > 0 && !selected_is_saved
     end
 
@@ -198,19 +198,19 @@ module Screens
       if @finished
         if @focus == 0
           network_exists = @config.cells.select do |cell|
-            cell.ssid == @selected_ssid
+            cell.ssid == @selected_access_point.ssid
           end.any?
           if network_exists
             case @wifi_option_index
             when 0
-              return Screens::OverrideWarningScreen.new(@selected_ssid)
+              return Screens::OverrideWarningScreen.new(@selected_access_point.ssid)
             when 1
-              return Screens::DeleteScreen.new(@selected_ssid)
+              return Screens::DeleteScreen.new(@selected_access_point.ssid)
             when 2
-              return Screens::PrioritizeScreen.new(@selected_ssid)
+              return Screens::PrioritizeScreen.new(@selected_access_point.ssid)
             end
           else
-            return Screens::EnterWifiPasswordScreen.new(@selected_ssid)
+            return Screens::EnterWifiPasswordScreen.new(@selected_access_point.ssid)
           end
         else
           return Screens::ManualSSIDScreen.new() if @menu_index == 0
