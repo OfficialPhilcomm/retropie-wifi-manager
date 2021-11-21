@@ -55,7 +55,7 @@ module Screens
           window << "#{access_point.ssid}"
         end
 
-        if @selected_access_point && @wifi_index == i
+        if @selected_access_point == access_point
           if @wifi_option_index == 0
             window.attron(color_pair(COLOR_RED)) {
               window << "\n    »  Connect"
