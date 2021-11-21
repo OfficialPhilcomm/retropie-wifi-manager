@@ -9,7 +9,15 @@ module Network
     FREQUENCY_REGEX = /(?<frequency>\d[.]\d+)/
     
     def access_points
-      @access_points ||= parse_access_points
+      if !@last_refresh
+        @access_points = parse_access_points
+      else
+        elapsed_seconds = (Time.now - @last_refresh)
+
+        @access_points = parse_access_points if elapsed_seconds > 15
+      end
+
+      @access_points
     end
 
     def parse_access_points
@@ -29,6 +37,8 @@ module Network
         else
           "5 GHz"
         end
+
+        @last_refresh = Time.now
 
         Network::AccessPoint.new(match[:ssid], frequency)
       end
