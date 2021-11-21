@@ -44,7 +44,7 @@ module Screens
 
     def compute
       if @cell.valid?
-        config = Config.new()
+        config = Network::Config.new()
         
         config.set_priority @cell
         

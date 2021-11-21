@@ -54,7 +54,7 @@ module Screens
     
     def compute
       if @confirm
-        config = Config.new()
+        config = Network::Config.new()
         
         cell = config.cells.select do |cell|
           cell.ssid == @selected_ssid

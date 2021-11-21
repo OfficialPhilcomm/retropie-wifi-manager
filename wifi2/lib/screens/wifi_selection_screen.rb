@@ -1,7 +1,7 @@
 module Screens
   class WifiSelectionScreen
     def initialize(access_points)
-      @config = Config.new()
+      @config = Network::Config.new()
 
       @access_points = access_points
       
