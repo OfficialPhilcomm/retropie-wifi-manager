@@ -27,20 +27,22 @@ module Network
         match = NETWORK_REGEX.match(access_point)
         next unless match
 
-        frequency = FREQUENCY_REGEX.match(match[:frequency])[:frequency].to_f
-
-        diff_to_2_4 = (frequency - 2.4).abs
-        diff_to_5 = (frequency - 5).abs
-
-        frequency = if diff_to_2_4 < diff_to_5
-          2.4
-        else
-          5
-        end
+        frequency = Network::Wifi.normalize_frequency(FREQUENCY_REGEX.match(match[:frequency])[:frequency].to_f)
 
         @last_refresh = Time.now
 
         Network::AccessPoint.new(match[:ssid], frequency)
+      end
+    end
+
+    def self.normalize_frequency(freq)
+      diff_to_2_4 = (freq - 2.4).abs
+      diff_to_5 = (freq - 5).abs
+
+      if diff_to_2_4 < diff_to_5
+        2.4
+      else
+        5
       end
     end
   end

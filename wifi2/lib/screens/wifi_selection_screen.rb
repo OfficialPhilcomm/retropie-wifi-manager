@@ -13,15 +13,7 @@ module Screens
 
       @connected_ssid = iwgetid_ssid_match ? iwgetid_ssid_match[:ssid] : nil
       @connected_frequency = if iwgetid_freq_match
-        frequency = iwgetid_freq_match[:frequency].to_f
-        diff_to_2_4 = (frequency - 2.4).abs
-        diff_to_5 = (frequency - 5).abs
-
-        frequency = if diff_to_2_4 < diff_to_5
-          2.4
-        else
-          5
-        end
+        frequency = Network::Wifi.normalize_frequency(iwgetid_freq_match[:frequency].to_f)
       else
         nil
       end
