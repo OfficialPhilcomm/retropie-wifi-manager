@@ -19,21 +19,16 @@ module Screens
     end
 
     def compute
-      @ssids = `iwlist wlan0 scan | grep ESSID`
-        .split("\n")
-        .map do |line|
-          match = SSID_REGEX.match(line)
-          next unless match
-          match[:ssid]
-        end
-        .select do |ssid|
-          ssid
-        end
+      @access_points = Network::Wifi.instance.access_points
     end
 
     def resolve
-      if @ssids
-        return WifiSelectionScreen.new(@ssids)
+      if @access_points
+        return WifiSelectionScreen.new(
+          @access_points.map do |access_point|
+            access_point.ssid
+          end
+        )
       end
     end
   end
