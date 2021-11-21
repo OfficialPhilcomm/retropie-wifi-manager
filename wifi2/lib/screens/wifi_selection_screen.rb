@@ -46,13 +46,16 @@ module Screens
         if @connected_ssids.include? access_point.ssid
           window.attron(color_pair(COLOR_GREEN)) {
             window << "#{access_point.ssid}"
+            window << " (5GHz)" if access_point.five_ghz?
           }
         elsif @config.cells.map {|c| c.ssid}.include? access_point.ssid
           window.attron(color_pair(COLOR_BLUE)) {
             window << "#{access_point.ssid}"
+            window << " (5GHz)" if access_point.five_ghz?
           }
         else
           window << "#{access_point.ssid}"
+          window << " (5GHz)" if access_point.five_ghz?
         end
 
         if @selected_access_point == access_point

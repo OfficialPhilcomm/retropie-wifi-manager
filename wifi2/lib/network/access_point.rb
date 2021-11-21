@@ -6,5 +6,9 @@ module Network
       @ssid = ssid
       @frequency = frequency
     end
+
+    def five_ghz?
+      @frequency == 5
+    end
   end
 end

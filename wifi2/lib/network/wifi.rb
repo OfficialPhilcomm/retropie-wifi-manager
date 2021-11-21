@@ -33,9 +33,9 @@ module Network
         diff_to_5 = (frequency - 5).abs
 
         frequency = if diff_to_2_4 < diff_to_5
-          "2.4 GHz"
+          2.4
         else
-          "5 GHz"
+          5
         end
 
         @last_refresh = Time.now
