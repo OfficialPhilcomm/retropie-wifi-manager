@@ -35,6 +35,10 @@ module Network
       end
     end
 
+    def reset_cache
+      @last_refresh = nil
+    end
+
     def self.normalize_frequency(freq)
       diff_to_2_4 = (freq - 2.4).abs
       diff_to_5 = (freq - 5).abs

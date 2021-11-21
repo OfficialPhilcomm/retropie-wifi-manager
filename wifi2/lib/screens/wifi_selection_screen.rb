@@ -101,7 +101,7 @@ module Screens
     end
 
     def draw_bottom(window)
-      bottom_y = window.maxy() - 5
+      bottom_y = window.maxy() - 6
       window.setpos(bottom_y, 0)
 
       if @focus == 1 && @menu_index == 0
@@ -113,6 +113,14 @@ module Screens
       end
 
       if @focus == 1 && @menu_index == 1
+        window.attron(color_pair(COLOR_RED)) {
+          window << "Refresh\n"
+        }
+      else
+        window << "Refresh\n"
+      end
+
+      if @focus == 1 && @menu_index == 2
         window.attron(color_pair(COLOR_RED)) {
           window << "Exit\n"
         }
@@ -192,10 +200,14 @@ module Screens
       @wifi_index = [@wifi_index, 0, @access_points.size - 1].sort[1]
       @wifi_option_index = [@wifi_option_index, 0, 2].sort[1]
 
-      @menu_index = [@menu_index, 0, 1].sort[1]
+      @menu_index = [@menu_index, 0, 2].sort[1]
 
       selected_is_saved = @config.cells.map {|c| c.ssid}.include?(@access_points[@wifi_index].ssid)
       @wifi_option_index = 0 if @wifi_option_index > 0 && !selected_is_saved
+
+      if @finished && @menu_index == 1
+        Network::Wifi.instance.reset_cache
+      end
     end
 
     def resolve
@@ -217,8 +229,14 @@ module Screens
             return Screens::EnterWifiPasswordScreen.new(@selected_access_point.ssid)
           end
         else
-          return Screens::ManualSSIDScreen.new() if @menu_index == 0
-          exit 0 if @menu_index == 1
+          case @menu_index
+          when 0
+            return Screens::ManualSSIDScreen.new()
+          when 1
+            return Screens::ScanForSSIDsScreen.new()
+          when 2
+            exit 0
+          end
         end
       end
     end
