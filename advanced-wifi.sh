@@ -12,7 +12,7 @@
 rp_module_id="advanced-wifi"
 rp_module_desc="Advanced wifi manager with OSK"
 rp_module_help="This is a wifi manager terminal app with an on screen keyboard, for when no keyboard is in reach!"
-rp_module_section="exp"
+rp_module_section="opt"
 rp_module_flags="rpi noinstclean nobin"
 rp_module_repo="git https://github.com/OfficialPhilcomm/retropie-wifi-manager.git master"
 rp_module_licence="MIT https://raw.githubusercontent.com/OfficialPhilcomm/retropie-wifi-manager/master/LICENSE.md"
