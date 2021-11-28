@@ -28,9 +28,9 @@ function sources_advanced-wifi() {
 function install_advanced-wifi() {
   cd "$md_inst"
   chown -R $user:$user "$md_inst"
-  chmod -R 755 "$md_inst"
 
-  sudo gem install curses require_all
+  sudo gem install bundler --conservative
+  bundle install
 }
 
 function gui_advanced-wifi() {
